@@ -1,4 +1,7 @@
+using Basket.API.GrpcServices;
 using Basket.API.Repositories;
+using Discount.Grpc.Protos;
+using Grpc.Core;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
@@ -11,6 +14,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using static Discount.Grpc.Protos.DiscountProtoService;
 
 namespace Basket.API
 {
@@ -32,7 +36,19 @@ namespace Basket.API
 
             });
 
-            services.AddScoped<IBasketRepository, BasketRepository>(); ; 
+            // Enable support for unencrypted HTTP2  
+            AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+
+            services.AddScoped<IBasketRepository, BasketRepository>();
+            //services.AddAutoMapper(typeof(Startup));
+
+            // Grpc Configuration
+            services.AddGrpcClient<DiscountProtoService.DiscountProtoServiceClient>
+                (o => { 
+                    o.Address = new Uri(Configuration["GrpcSettings:DiscountUrl"]);
+                    o.ChannelOptionsActions.Add(channelOptions => channelOptions.Credentials = ChannelCredentials.Insecure);
+                });
+            services.AddScoped<DiscountGrpcService>();            
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
