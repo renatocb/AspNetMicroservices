@@ -93,7 +93,7 @@ namespace Basket.API.Controllers
             // remove the basket
             await _repository.DeleteBasket(basket.UserName);
 
-            return Accepted();
+            return Ok();
         }
     }
 }

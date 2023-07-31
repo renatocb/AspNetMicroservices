@@ -24,11 +24,11 @@ namespace Ordering.API.EventBusConsumer
 
         public async Task Consume(ConsumeContext<BasketCheckoutEvent> context)
         {
-            var command = _mapper.Map<CheckoutOrderCommand>(context.Message);
+            //var command = _mapper.Map<CheckoutOrderCommand>(context.Message);
 
-            var result = await _mediator.Send(command);
+            //var result = await _mediator.Send(command);
 
-            _logger.LogInformation("BasketCheckoutEvent consumed successfully. Created Order Id : {newOrderId}", result);
+            //_logger.LogInformation("BasketCheckoutEvent consumed successfully. Created Order Id : {newOrderId}", result);
         }
     }
 }
